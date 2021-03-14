@@ -1,48 +1,49 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Sat Mar  6 15:02:21 2021
-
-@author: Bright Ogunjobi
-"""
-
 import numpy as np
+import pandas as pd
+from numpy import *
 import matplotlib.pyplot as plt
-from matplotlib import animation
+import matplotlib.animation as ani
+from matplotlib.animation import FuncAnimation
+import matplotlib.animation as animation
+
 
 freq = array([4.040, 3.760, 3.600, 3.030, 2.560, 1.000])
 voltage = array([-158.594, -120.000, -100.000, -50.000, -25.000, 0])
 
-fig = plt.figure()
-ax = plt.axes(xlim=200, ylim=200)
-line = ax.plot(freq, voltage,lw = 2)
+arrange = {"Frequency(GHz)":freq, "Voltage(V)": voltage}
+data = pd.DataFrame(arrange)
 
-def init():
-    line.set_data(freq, voltage)
-    return line
+print("Table of values")
+print("")
+print(data)
+
+fig, ax = plt.subplots()
+
+plt.grid()
+plt.xlabel('Voltage(V)', fontsize=10)
+plt.ylabel('Frequency(GHz)',fontsize=10)
+plt.title('Frequency(GHz) versus Voltage(V).',fontsize=13, color = "black")
+plt.yticks(color='green')
+plt.xticks(color='green')
+
+line, = ax.plot(voltage,freq, color="red")
+f = np.linspace(0,10,100)
+
+plt.scatter(voltage,freq, color ='black')
 
 
-def animate(x,y):
-    arrange = {"Frequency(GHz)": x, "Voltage(V)": y}
-    data = pd.DataFrame(arrange)
-    print(data)
-    
-    
-    plt.grid()
+def animate_graph(digits,x,y,line):
+    line.set_data(x[:digits], y[:digits])
+    return line,
 
-    plt.xlabel('Frequency(GHz)', fontsize=10)
-    plt.ylabel('Voltage(V)',fontsize=10)
-    plt.title('Frequency(GHz) versus Voltage(V).',fontsize=15, color = "blue")
-    plt.yticks(color='green')
-    plt.xticks(color='red')
-    
-    
-    data.plot(x = "Frequency(GHz)", y= "Voltage(V)", kind = "line")
-    
-anim = animation.FuncAnimation(fig, animate, init_func = init, frames = 200, interval = 20, blit=True)
+animation = FuncAnimation(fig, animate_graph, len(voltage), fargs=[voltage,freq,line], interval = 300, blit=True)
+
+animation.save("Frequency vs Voltage animated graph.gif")
 
 
 plt.show()
 
 
 
-    
+
+
